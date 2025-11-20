@@ -105,7 +105,7 @@ class RankTable extends Component {
     }
 
     render() {
-        if (this.props.data) {
+        if (this.props.data && this.props.data.length > 0) {
             return (
                 <div className="rank-table">
                     {this.renderHeader()}
@@ -113,7 +113,11 @@ class RankTable extends Component {
                 </div >
             );
         } else {
-            return false;
+            return (
+                <div className="rank-table">
+                    <p>No players participated in the quiz.</p>
+                </div>
+            );
         }
     }
 }

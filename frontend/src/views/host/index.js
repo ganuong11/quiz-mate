@@ -43,11 +43,13 @@ class Host extends Component {
             answerStats: null,
             generalRanking: null,
             revealAnswer: false,
-            revealStats: false
+            revealStats: false,
+            autoNextEnabled: false
         };
         this.onReceiveQuestions = this.onReceiveQuestions.bind(this);
         this.onStartQuiz = this.onStartQuiz.bind(this);
         this.nextButton = this.nextButton.bind(this);
+        this.toggleAutoNext = this.toggleAutoNext.bind(this);
     }
 
     componentDidMount() {
@@ -82,15 +84,20 @@ class Host extends Component {
         this.setState({ questions });
     }
 
+    toggleAutoNext() {
+        this.setState({ autoNextEnabled: !this.state.autoNextEnabled });
+    }
+
     onStartQuiz() {
         this.nextQuestion(-1);
     }
 
     nextButton() {
         if (this.state.questionIsOpen && 0 <= this.state.questionIndex) {
-            this.setState({ questionIsOpen: false });
-            const { imageUrl, ...question } = this.state.questions[this.state.questionIndex];
-            this.socket.emit(closeQuestion, this.props.game.hostingRoom.roomCode, question);
+            this.setState({ questionIsOpen: false }, () => {
+                const { imageUrl, ...question } = this.state.questions[this.state.questionIndex];
+                this.socket.emit(closeQuestion, this.props.game.hostingRoom.roomCode, question);
+            });
         } else {
             this.nextQuestion(this.state.questionIndex + 1);
         }
@@ -174,7 +181,9 @@ class Host extends Component {
                     answerStats={this.state.answerStats}
                     revealAnswer={this.state.revealAnswer}
                     revealStats={this.state.revealStats}
-                    generalRanking={this.state.generalRanking} />);
+                    generalRanking={this.state.generalRanking}
+                    autoNextEnabled={this.state.autoNextEnabled}
+                    toggleAutoNext={this.toggleAutoNext} />);
             case V_FINAL:
                 return (<Final {...this.props}
                     generalRanking={this.state.generalRanking} />);

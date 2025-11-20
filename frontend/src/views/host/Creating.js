@@ -8,6 +8,7 @@ import LogicSwitch from "../../components/LogicSwitch";
 import TimePicker from "../../components/TimePicker";
 import { createNewRoom } from "../../connection/config";
 import { installOnBeforeUnloadListener, onHostStartGame } from "../../utilities";
+import seedrandom from 'seedrandom';
 import { upliftAndValidate } from "../../utilities/quiz-data";
 import { SAMPLE_QUIZ } from "../../utilities/sample-quiz";
 import "./Creating.css";
@@ -22,7 +23,8 @@ class Creating extends Component {
             questions: [],
             timeLimit: 0,
             questionLimit: 0,
-            randomOrder: false
+            randomOrder: false,
+            seed: Math.random().toString(36).substring(2, 15)
         };
         this.createRoom = this.createRoom.bind(this);
         this.inputFile = React.createRef();
@@ -40,10 +42,23 @@ class Creating extends Component {
         this.setState({ randomOrder });
     }
 
+    shuffleAnswers(answers, correct) {
+        const indices = answers.map((_, i) => i);
+        // Shuffle indices using Fisher-Yates
+        for (let i = indices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [indices[i], indices[j]] = [indices[j], indices[i]];
+        }
+        const newAnswers = indices.map(i => answers[i]);
+        const newCorrect = indices.indexOf(correct);
+        return { answers: newAnswers, correct: newCorrect };
+    }
+
     shuffle(array) {
+        const rng = seedrandom(this.state.seed);
         let currentIndex = array.length, temporaryValue, randomIndex;
         while (0 !== currentIndex) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
+            randomIndex = Math.floor(rng() * currentIndex);
             currentIndex -= 1;
             temporaryValue = array[currentIndex];
             array[currentIndex] = array[randomIndex];
@@ -57,7 +72,8 @@ class Creating extends Component {
             title: this.state.title.trim(),
             timeLimit: this.state.timeLimit,
             questionLimit: this.state.questionLimit,
-            randomOrder: this.state.randomOrder
+            randomOrder: this.state.randomOrder,
+            seed: this.state.seed
         };
         const q = this.state.questions.slice();
         if (this.state.randomOrder) {
@@ -95,6 +111,12 @@ class Creating extends Component {
     startQuiz = (quiz, filename) => {
         try {
             quiz = upliftAndValidate(quiz, filename || "");
+            // Shuffle answers for each question
+            for (let q of quiz.questions) {
+                const shuffled = this.shuffleAnswers(q.answers, q.correct);
+                q.answers = shuffled.answers;
+                q.correct = shuffled.correct;
+            }
             installOnBeforeUnloadListener();
             onHostStartGame(quiz.title);
             this.setState({ questions: quiz.questions, title: quiz.title }, this.createRoom);

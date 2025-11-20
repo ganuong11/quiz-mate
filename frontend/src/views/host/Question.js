@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, ButtonGroup, Col, Container, ProgressBar, Row } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Container, ProgressBar, Row, Form } from "react-bootstrap";
 
 import CenterBox from "../../components/CenterBox";
 import RankTable from "../../components/RankTable";
@@ -81,8 +81,8 @@ class Question extends Component {
     }
 
     onTimerStop() {
-        if (Phase.GUESSING === this.getPhase()) {
-            this.onStopButton();
+        if (this.props.autoNextEnabled && Phase.GUESSING === this.getPhase()) {
+            this.onAutoNext();
         }
     }
 
@@ -147,6 +147,13 @@ class Question extends Component {
                     </Col>
                     <Col md={{ span: 4, order: 2 }} sm={{ span: 12, order: 1 }} xs={{ span: 12, order: 1 }}>
                         {this.renderTimer()}
+                        <Form.Check
+                            type="checkbox"
+                            label="Auto-next on timeout"
+                            checked={this.props.autoNextEnabled}
+                            onChange={this.props.toggleAutoNext}
+                            style={{ marginTop: "10px" }}
+                        />
                     </Col>
                     <Col md={{ span: 4, order: 3 }} sm={{ span: 6, order: 3 }} xs={{ span: 6, order: 3 }}>
                         <div className="question-answers-counter">
@@ -266,6 +273,21 @@ class Question extends Component {
         this.stopTimer();
         this.props.nextButton();
     }
+
+    onAutoNext = () => {
+        this.props.nextButton();
+        setTimeout(() => {
+            this.props.changeTab(TAB_REVEAL_ANSWER);
+            setTimeout(() => {
+                if (this.props.isLastQuestion) {
+                    this.endQuiz();
+                } else {
+                    this.props.nextButton();
+                    this.startTimer();
+                }
+            }, 2000);
+        }, 100);
+    };
 
     onNextButton() {
         this.startTimer();
