@@ -8,7 +8,7 @@ import RadioButtonUncheckedIcon from '../../assets/icons/radio_button_unchecked.
 import { toLetter } from "../../utilities";
 import "./QuestionEditor.css";
 
-const MAX_ANSWERS = 4;
+const MAX_ANSWERS = 6;
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
 class QuestionEditor extends Component {

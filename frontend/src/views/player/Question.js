@@ -11,8 +11,11 @@ import "./Question.css";
 class Question extends Component {
 
     answer(answer, index) {
+        const { question } = this.props;
+        const numAnswers = question.answers.filter(a => a && a.trim()).length;
+        const isFourAnswers = numAnswers <= 4;
         return (
-            <Col md={6} sm={12} key={index}>
+            <Col lg={isFourAnswers ? 6 : 4} md={6} sm={12} key={index}>
                 <div className="player-answer" onClick={() => this.selectAnswer(index)}>
                     <div className="player-answer-letter">{toLetter(index)}</div>
                     {answer}
@@ -44,7 +47,7 @@ class Question extends Component {
                             )}
                         </div>
                     </Col>
-                    {question.answers.map((answer, index) => this.answer(answer, index))}
+                    {question.answers.map((answer, index) => answer && answer.trim() ? this.answer(answer, index) : null)}
                 </Row>
             </div>
         );

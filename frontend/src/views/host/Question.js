@@ -110,8 +110,10 @@ class Question extends Component {
     }
 
     renderAnswer(answer, index) {
+        const numAnswers = this.props.question.answers.filter(a => a && a.trim()).length;
+        const isFourAnswers = numAnswers <= 4;
         return (
-            <Col md={6} sm={12} key={index}>
+            <Col lg={isFourAnswers ? 6 : 4} md={6} sm={12} key={index}>
                 <div className={"question-answer" + this.correctGreenBox(index)}>
                     <div className="question-answer-letter">{toLetter(index)}</div>
                     {answer}
@@ -172,7 +174,7 @@ class Question extends Component {
                             )}
                         </div>
                     </Col>
-                    {this.props.question.answers.map(this.renderAnswer)}
+                    {this.props.question.answers.map((answer, index) => answer && answer.trim() ? this.renderAnswer(answer, index) : null)}
                 </Row>
             </div >
         );
