@@ -43,10 +43,11 @@ class Creating extends Component {
     }
 
     shuffleAnswers(answers, correct) {
+        const rng = seedrandom(this.state.seed);  // Use seeded RNG for consistency
         const indices = answers.map((_, i) => i);
-        // Shuffle indices using Fisher-Yates
+        // Shuffle indices using Fisher-Yates with seeded random
         for (let i = indices.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
+            const j = Math.floor(rng() * (i + 1));
             [indices[i], indices[j]] = [indices[j], indices[i]];
         }
         const newAnswers = indices.map(i => answers[i]);
