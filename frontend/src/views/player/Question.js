@@ -10,6 +10,30 @@ import "./Question.css";
 
 class Question extends Component {
 
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyPress);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyPress);
+    }
+
+    handleKeyPress = (event) => {
+        // Map keys A-F (both uppercase and lowercase) to answer indices 0-5
+        const key = event.key.toLowerCase();
+        const keyMap = { 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5 };
+        
+        if (key in keyMap && this.props.question) {
+            const answerIndex = keyMap[key];
+            const { question } = this.props;
+            // Check if this answer index exists and is not empty
+            if (question.answers[answerIndex] && question.answers[answerIndex].trim()) {
+                event.preventDefault();
+                this.selectAnswer(answerIndex);
+            }
+        }
+    };
+
     answer(answer, index) {
         const { question } = this.props;
         const numAnswers = question.answers.filter(a => a && a.trim()).length;

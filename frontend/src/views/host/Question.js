@@ -52,6 +52,28 @@ class Question extends Component {
         this.renderAnswer = this.renderAnswer.bind(this);
         this.onStopButton = this.onStopButton.bind(this);
         this.timerTick = this.timerTick.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+    }
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyPress);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyPress);
+    }
+
+    handleKeyPress(event) {
+        const phase = this.getPhase();
+        // Only trigger on space or right arrow, and not when guessing phase (disabled state)
+        if ((event.key === ' ' || event.key === 'ArrowRight') && phase !== Phase.GUESSING) {
+            event.preventDefault();
+            if (this.props.isLastQuestion) {
+                this.endQuiz();
+            } else {
+                this.onNextButton();
+            }
+        }
     }
 
     getPhase() {
