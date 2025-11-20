@@ -288,10 +288,9 @@ class Question extends Component {
                 if (this.props.isLastQuestion) {
                     this.endQuiz();
                 } else {
-                    this.props.nextButton();
-                    this.startTimer();
+                    this.onNextButton();
                 }
-            }, 2000);
+            }, 4000);
         }, 100);
     };
 
