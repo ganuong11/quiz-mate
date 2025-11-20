@@ -25,6 +25,11 @@ export function upliftQuiz(quiz, filename) {
     quiz.title = quiz.title.trim();
     quiz.title ||= filename;
     quiz.questions ||= [];
+    // Trim answers & questions
+    quiz.questions.forEach(q => {
+        if (q.question) q.question = q.question.trim();
+        if (q.answers) q.answers = q.answers.map(a => a.trim());
+    });
     return quiz;
 }
 
@@ -108,10 +113,10 @@ function validateAnswers(questionReference, answers) {
         if ("string" !== typeof answer) {
             fail(`${answerReference} has an invalid type (${typeof answer} instead of string)`);
         }
-        if (!answer.trim()) {
-            fail(`${answerReference} is empty`);
-        }
     });
+    if (!answers.some(a => a.trim())) {
+        fail(`${capitalize(questionReference)} has no non-empty answers`);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
