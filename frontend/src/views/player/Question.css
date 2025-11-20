@@ -34,3 +34,18 @@
     padding: 10px 10px 0 10px;
     font-size: 1.0em;
 }
+
+.player-question-image {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-height: max(0.5vh, calc(100vh - 37rem));
+    margin-top: 20px;
+}
+
+.player-question-image img {
+    max-width: 100%;
+    width: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+}

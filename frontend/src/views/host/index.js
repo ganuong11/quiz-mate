@@ -101,8 +101,7 @@ class Host extends Component {
     nextButton() {
         if (this.state.questionIsOpen && 0 <= this.state.questionIndex) {
             this.setState({ questionIsOpen: false }, () => {
-                const { imageUrl, ...question } = this.state.questions[this.state.questionIndex];
-                this.socket.emit(closeQuestion, this.props.game.hostingRoom.roomCode, question);
+                this.socket.emit(closeQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[this.state.questionIndex]);
             });
         } else {
             this.nextQuestion(this.state.questionIndex + 1);
@@ -120,9 +119,7 @@ class Host extends Component {
         }, () => {
             this.props.switchState(V_QUESTION);
             if (0 <= index) {
-                // don't send the image to the server
-                const { imageUrl, ...question } = this.state.questions[index];
-                this.socket.emit(newQuestion, this.props.game.hostingRoom.roomCode, { index, ...question });
+                this.socket.emit(newQuestion, this.props.game.hostingRoom.roomCode, { index, ...this.state.questions[index] });
             }
         });
     }

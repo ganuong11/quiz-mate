@@ -29,6 +29,19 @@ class Question extends Component {
                     <Col xs={12}>
                         <div className="player-question">
                             {question.question}
+                            {question.imageUrl && (
+                                <div className="player-question-image">
+                                    <img 
+                                        src={question.imageUrl} 
+                                        alt="Question Image" 
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'block';
+                                        }} 
+                                    />
+                                    <div style={{ display: 'none', color: 'red', marginTop: '10px' }}>Image failed to load</div>
+                                </div>
+                            )}
                         </div>
                     </Col>
                     {question.answers.map((answer, index) => this.answer(answer, index))}
