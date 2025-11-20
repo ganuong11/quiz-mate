@@ -68,10 +68,6 @@ class Host extends Component {
         this.socket.on(userCountUpdate, count => this.setState({ connectedUsers: count }));
         this.socket.on(answerCountUpdate, count => {
             this.setState({ answerCount: count });
-            // Auto-advance for single player when they answer
-            if (this.state.connectedUsers === 1 && count === 1 && this.state.questionIsOpen) {
-                setTimeout(() => this.nextButton(), 1000); // Wait 1 second before auto-closing
-            }
         });
         this.socket.on(answerStatsResponse, stats => this.setState({ answerStats: stats }));
         this.socket.on(generalRankingResponse, stats => this.setState({ generalRanking: stats }));

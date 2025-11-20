@@ -117,9 +117,10 @@ class Question extends Component {
     }
 
     correctGreenBox(answer) {
+        const phase = this.getPhase();
         const isRevealAnswerTab = this.props.questionTab === TAB_REVEAL_ANSWER;
         const isCorrectAnswer = this.props.question.correct === answer;
-        const mustRevealAnswer = (isRevealAnswerTab || this.props.revealAnswer) && isCorrectAnswer;
+        const mustRevealAnswer = phase === Phase.REVEALING && (isRevealAnswerTab || this.props.revealAnswer) && isCorrectAnswer;
         return mustRevealAnswer ? " question-answer-correct" : "";
     }
 
@@ -300,6 +301,7 @@ class Question extends Component {
     onStopButton() {
         this.stopTimer();
         this.props.nextButton();
+        // Use a longer delay to ensure state has updated before changing tab
         setTimeout(() => {
             this.props.changeTab(TAB_REVEAL_ANSWER);
         }, 100);
