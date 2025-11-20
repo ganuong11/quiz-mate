@@ -278,6 +278,9 @@ class Question extends Component {
     onStopButton() {
         this.stopTimer();
         this.props.nextButton();
+        setTimeout(() => {
+            this.props.changeTab(TAB_REVEAL_ANSWER);
+        }, 100);
     }
 
     onAutoNext = () => {
