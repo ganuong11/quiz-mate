@@ -81,8 +81,12 @@ class Question extends Component {
     }
 
     onTimerStop() {
-        if (this.props.autoNextEnabled && Phase.GUESSING === this.getPhase()) {
-            this.onAutoNext();
+        if (Phase.GUESSING === this.getPhase()) {
+            if (this.props.autoNextEnabled) {
+                this.onAutoNext();
+            } else {
+                this.onStopButton();
+            }
         }
     }
 
